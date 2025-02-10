@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "RepoAnalisys.Grpc";
+
+import "protos/repository_with_branch_query.proto";
+
+package repository;
+
+service QualityOperator {
+  rpc VerifyProjectQuality (RepositoryWithBranchQuery) returns (QualityResponse);
+}
+
+message QualityResponse {
+  int32 score = 1;
+}

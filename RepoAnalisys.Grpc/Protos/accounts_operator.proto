@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "RepoAnalisys.Grpc";
+
+import "protos/branch_query.proto";
+
+package repository;
+
+service AccountsOperator {
+  rpc GetAuthorBranches (BranchQuery) returns (BranchesResponse);
+}
+
+message BranchesResponse {
+  repeated string branch_titles = 1;
+}
