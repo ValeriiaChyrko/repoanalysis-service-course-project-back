@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>RepoAnalisys.Grpc</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -60,6 +61,7 @@
 
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.64.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -74,6 +76,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\repoanalysis\repoanalysis-back\RepoAnalysis.Application\RepoAnalysis.Application.csproj"/>
+        <ProjectReference Include="..\RepoAnalysis.Application\RepoAnalysis.Application.csproj" />
     </ItemGroup>
 
 </Project>
