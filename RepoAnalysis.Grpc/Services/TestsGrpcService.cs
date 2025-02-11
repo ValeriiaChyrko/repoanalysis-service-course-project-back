@@ -1,15 +1,16 @@
 ﻿using Grpc.Core;
+using RepoAnalisys.Grpc;
 using RepoAnalysis.Application.Abstractions;
 using RepoAnalysis.DTOs;
 
-namespace RepoAnalisys.Grpc.Services;
+namespace RepoAnalysis.Grpc.Services;
 
-public class TestsService : TestsOperator.TestsOperatorBase
+public class TestsGrpcService : TestsOperator.TestsOperatorBase
 {
-    private readonly ILogger<TestsService> _logger;
+    private readonly ILogger<TestsGrpcService> _logger;
     private readonly ITestsService _testsService;
 
-    public TestsService(ITestsService testsService, ILogger<TestsService> logger)
+    public TestsGrpcService(ITestsService testsService, ILogger<TestsGrpcService> logger)
     {
         _testsService = testsService ?? throw new ArgumentNullException(nameof(testsService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -1,10 +1,9 @@
 using RepoAnalysis.Application;
-using RepoAnalysis.Application.Implementations;
 using RepoAnalysis.Domain;
 using RepoAnalysis.DTOs;
 using Serilog;
 
-namespace RepoAnalisys.Grpc;
+namespace RepoAnalysis.Grpc;
 
 public static class Program
 {
@@ -12,23 +11,21 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         
-        builder.Services.AddGrpc();
-        
+        // Register services
+        builder.Services.AddGrpcServices();
         builder.Services.AddDtosServices();
         builder.Services.AddApplicationServices();
         builder.Services.AddDomainServices();
         
+        // Configure Serilog
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
 
         var app = builder.Build();
 
+        // Configure middleware and endpoints
         app.UseSerilogRequestLogging();
-        
-        app.MapGrpcService<AccountService>();
-        app.MapGrpcService<CompilationService>();
-        app.MapGrpcService<QualityService>();
-        app.MapGrpcService<TestsService>();
+        app.ConfigureEndpoints(); 
         
         app.Run();
     }

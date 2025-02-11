@@ -1,15 +1,16 @@
 ﻿using Grpc.Core;
+using RepoAnalisys.Grpc;
 using RepoAnalysis.Application.Abstractions;
 using RepoAnalysis.DTOs;
 
-namespace RepoAnalisys.Grpc.Services;
+namespace RepoAnalysis.Grpc.Services;
 
-public class QualityService : QualityOperator.QualityOperatorBase
+public class QualityGrpcService : QualityOperator.QualityOperatorBase
 {
-    private readonly ILogger<QualityService> _logger;
+    private readonly ILogger<QualityGrpcService> _logger;
     private readonly IQualityService _qualityService;
 
-    public QualityService(IQualityService qualityService, ILogger<QualityService> logger)
+    public QualityGrpcService(IQualityService qualityService, ILogger<QualityGrpcService> logger)
     {
         _qualityService = qualityService ?? throw new ArgumentNullException(nameof(qualityService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

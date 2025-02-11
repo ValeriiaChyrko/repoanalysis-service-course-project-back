@@ -1,15 +1,16 @@
 ﻿using Grpc.Core;
+using RepoAnalisys.Grpc;
 using RepoAnalysis.Application.Abstractions;
 using RepoAnalysis.DTOs;
 
-namespace RepoAnalisys.Grpc.Services;
+namespace RepoAnalysis.Grpc.Services;
 
-public class CompilationService : CompilationOperator.CompilationOperatorBase
+public class CompilationGrpcService : CompilationOperator.CompilationOperatorBase
 {
     private readonly ICompilationService _compilationService;
-    private readonly ILogger<CompilationService> _logger;
+    private readonly ILogger<CompilationGrpcService> _logger;
 
-    public CompilationService(ICompilationService compilationService, ILogger<CompilationService> logger)
+    public CompilationGrpcService(ICompilationService compilationService, ILogger<CompilationGrpcService> logger)
     {
         _compilationService = compilationService ?? throw new ArgumentNullException(nameof(compilationService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

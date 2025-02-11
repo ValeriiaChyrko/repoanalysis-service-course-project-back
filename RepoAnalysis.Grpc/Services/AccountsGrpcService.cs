@@ -1,15 +1,16 @@
 ﻿using Grpc.Core;
+using RepoAnalisys.Grpc;
 using RepoAnalysis.Application.Abstractions;
 using RepoAnalysis.DTOs;
 
-namespace RepoAnalisys.Grpc.Services;
+namespace RepoAnalysis.Grpc.Services;
 
-public class AccountsService : AccountsOperator.AccountsOperatorBase
+public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
 {
     private readonly IAccountService _accountService;
-    private readonly ILogger<AccountsService> _logger;
+    private readonly ILogger<AccountsGrpcService> _logger;
 
-    public AccountsService(IAccountService accountService, ILogger<AccountsService> logger)
+    public AccountsGrpcService(IAccountService accountService, ILogger<AccountsGrpcService> logger)
     {
         _accountService = accountService ?? throw new ArgumentNullException(nameof(accountService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -19,7 +20,8 @@ public class AccountsService : AccountsOperator.AccountsOperatorBase
     {
         _logger.LogInformation(
             "Received GetAuthorBranches request for repo: {RepoTitle}, owner: {Owner}, author: {Author}, since: {Since}, until: {Until}",
-            request.RepoTitle, request.OwnerGithubUsername, request.AuthorGithubUsername, request.Since, request.Until);
+            request.RepoTitle, request.OwnerGithubUsername, request.AuthorGithubUsername, 
+            request.Since?.ToDateTime(), request.Until?.ToDateTime());
 
         try
         {
@@ -28,20 +30,23 @@ public class AccountsService : AccountsOperator.AccountsOperatorBase
                 RepoTitle = request.RepoTitle,
                 OwnerGitHubUsername = request.OwnerGithubUsername,
                 AuthorGitHubUsername = request.AuthorGithubUsername,
-                Since = request.Since.ToDateTime(),
-                Until = request.Until.ToDateTime()
+                Since = request.Since?.ToDateTime(),  
+                Until = request.Until?.ToDateTime()   
             };
 
             var branches = await _accountService.GetAuthorBranches(query, context.CancellationToken);
+            var branchTitles = branches?.ToArray();
 
-            if (branches == null) return new BranchesResponse();
-
-            var branchTitles = branches as string[] ?? branches.ToArray();
-            _logger.LogInformation("Found {BranchCount} branches for repo: {RepoTitle}", branchTitles.Length,
-                request.RepoTitle);
+            if (branchTitles == null || branchTitles.Length == 0)
+            {
+                _logger.LogInformation("No branches found for repo: {RepoTitle}", request.RepoTitle);
+                return new BranchesResponse();
+            }
 
             var response = new BranchesResponse();
             response.BranchTitles.AddRange(branchTitles);
+
+            _logger.LogInformation("Found {BranchCount} branches for repo: {RepoTitle}", branchTitles.Length, request.RepoTitle);
 
             return response;
         }
