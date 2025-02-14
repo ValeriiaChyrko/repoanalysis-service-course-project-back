@@ -12,7 +12,7 @@ public static class Program
         var builder = WebApplication.CreateBuilder(args);
         
         // Register services
-        builder.Services.AddGrpcServices();
+        builder.Services.AddGrpcServices(builder.Configuration);
         builder.Services.AddDtosServices();
         builder.Services.AddApplicationServices();
         builder.Services.AddDomainServices();

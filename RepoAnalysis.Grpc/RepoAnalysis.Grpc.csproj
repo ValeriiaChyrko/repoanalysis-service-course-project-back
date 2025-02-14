@@ -64,6 +64,8 @@
 
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.64.0"/>
+        <PackageReference Include="OpenIddict.AspNetCore" Version="6.0.0" />
+        <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="6.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     </ItemGroup>
 

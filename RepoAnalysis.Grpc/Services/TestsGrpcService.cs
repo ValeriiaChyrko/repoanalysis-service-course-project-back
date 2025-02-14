@@ -1,10 +1,12 @@
 ﻿using Grpc.Core;
+using Microsoft.AspNetCore.Authorization;
 using RepoAnalisys.Grpc;
 using RepoAnalysis.Application.Abstractions;
 using RepoAnalysis.DTOs;
 
 namespace RepoAnalysis.Grpc.Services;
 
+[Authorize(Policy = "repoAnalysisPolicy")]
 public class TestsGrpcService : TestsOperator.TestsOperatorBase
 {
     private readonly ILogger<TestsGrpcService> _logger;
