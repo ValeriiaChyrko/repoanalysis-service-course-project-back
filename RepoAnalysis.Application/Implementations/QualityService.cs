@@ -34,12 +34,14 @@ public class QualityService : IQualityService
         if (lastCommitSha == null)
         {
             _logger.LogWarning("No commit found for {Author} in {Repo} ({Branch})",
-                repoWithBranchQuery.AuthorGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle);
+                repoWithBranchQuery.AuthorGitHubUsername, repoWithBranchQuery.RepoTitle,
+                repoWithBranchQuery.BranchTitle);
             throw new ArgumentNullException(nameof(lastCommitSha));
         }
 
         var percentage = await _gitHubBuildService.EvaluateProjectCodeQualityAsync(
-            repoWithBranchQuery.OwnerGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle, lastCommitSha,
+            repoWithBranchQuery.OwnerGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle,
+            lastCommitSha,
             cancellationToken);
 
         _logger.LogInformation("Project quality evaluation completed. Score: {Score}%", percentage);

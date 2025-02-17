@@ -1,4 +1,5 @@
-﻿using OpenIddict.Validation.AspNetCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using RepoAnalysis.Grpc.Services;
 
 namespace RepoAnalysis.Grpc;
@@ -9,55 +10,37 @@ public static class DependencyInjection
     {
         services.AddGrpc();
 
-        // Configure authentication
-        services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-        });
-
-        // Configure OpenIddict
-        var issuer = configuration
-            .GetRequiredSection("OpenIddictSettings")
-            .GetValue<string>("Issuer");
-        var clientId = configuration
-                    .GetRequiredSection("OpenIddictSettings")
-                    .GetValue<string>("ClientId");
-        var clientSecret = configuration
-                            .GetRequiredSection("OpenIddictSettings")
-                            .GetValue<string>("ClientSecret");
-        
-        services.AddOpenIddict()
-            .AddValidation(options =>
+        // Configure JWT Bearer authentication
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
             {
-                options.SetIssuer(issuer!); 
-                options.AddAudiences("repo_analysis_api"); 
-
-                options.UseIntrospection()
-                    .SetClientId(clientId!) 
-                    .SetClientSecret(clientSecret!); 
-
-                options.UseAspNetCore();
-                options.UseSystemNetHttp();
+                options.RequireHttpsMetadata = false; // Set to true in production
+                options.Audience = configuration["Authorization:Audience"];
+                options.MetadataAddress = configuration["Authorization:MetadataAddress"]!;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["Authorization:ValidIssuer"],
+                    ValidAudience = configuration["Authorization:Audience"],
+                    RoleClaimType = "role"
+                };
             });
-
-        // Configure authorization policies
-        services.AddAuthorizationBuilder()
-            .AddPolicy("repoAnalysisPolicy", policy =>
-            {
-                policy.RequireClaim("scope", "repo_analysis"); 
-            });
+        services.AddAuthorization();
     }
-    
+
     public static void ConfigureEndpoints(this IApplicationBuilder app)
     {
         app.UseRouting();
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapGrpcService<AccountsGrpcService>(); 
+            endpoints.MapGrpcService<AccountsGrpcService>();
             endpoints.MapGrpcService<CompilationGrpcService>();
             endpoints.MapGrpcService<QualityGrpcService>();
             endpoints.MapGrpcService<TestsGrpcService>();

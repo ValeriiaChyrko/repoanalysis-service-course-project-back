@@ -6,7 +6,7 @@ using RepoAnalysis.DTOs;
 
 namespace RepoAnalysis.Grpc.Services;
 
-[Authorize(Policy = "repoAnalysisPolicy")]
+[Authorize]
 public class CompilationGrpcService : CompilationOperator.CompilationOperatorBase
 {
     private readonly ICompilationService _compilationService;

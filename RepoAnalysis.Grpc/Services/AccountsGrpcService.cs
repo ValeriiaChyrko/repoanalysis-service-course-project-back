@@ -6,7 +6,7 @@ using RepoAnalysis.DTOs;
 
 namespace RepoAnalysis.Grpc.Services;
 
-[Authorize(Policy = "repoAnalysisPolicy")]
+[Authorize]
 public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
 {
     private readonly IAccountService _accountService;
@@ -22,7 +22,7 @@ public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
     {
         _logger.LogInformation(
             "Received GetAuthorBranches request for repo: {RepoTitle}, owner: {Owner}, author: {Author}, since: {Since}, until: {Until}",
-            request.RepoTitle, request.OwnerGithubUsername, request.AuthorGithubUsername, 
+            request.RepoTitle, request.OwnerGithubUsername, request.AuthorGithubUsername,
             request.Since?.ToDateTime(), request.Until?.ToDateTime());
 
         try
@@ -32,8 +32,8 @@ public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
                 RepoTitle = request.RepoTitle,
                 OwnerGitHubUsername = request.OwnerGithubUsername,
                 AuthorGitHubUsername = request.AuthorGithubUsername,
-                Since = request.Since?.ToDateTime(),  
-                Until = request.Until?.ToDateTime()   
+                Since = request.Since?.ToDateTime(),
+                Until = request.Until?.ToDateTime()
             };
 
             var branches = await _accountService.GetAuthorBranches(query, context.CancellationToken);
@@ -48,7 +48,8 @@ public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
             var response = new BranchesResponse();
             response.BranchTitles.AddRange(branchTitles);
 
-            _logger.LogInformation("Found {BranchCount} branches for repo: {RepoTitle}", branchTitles.Length, request.RepoTitle);
+            _logger.LogInformation("Found {BranchCount} branches for repo: {RepoTitle}", branchTitles.Length,
+                request.RepoTitle);
 
             return response;
         }

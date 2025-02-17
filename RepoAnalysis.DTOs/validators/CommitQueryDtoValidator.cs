@@ -4,12 +4,12 @@ namespace RepoAnalysis.DTOs.validators;
 
 public class CommitQueryDtoValidator : AbstractValidator<CommitQueryDto>
 {
-    public CommitQueryDtoValidator() 
+    public CommitQueryDtoValidator()
     {
         var baseValidator = new BaseQueryDtoValidator();
         RuleFor(x => x)
             .SetValidator(baseValidator);
-        
+
         RuleFor(x => x.BranchTitle)
             .NotEmpty()
             .WithMessage("Branch title cannot be null or whitespace.");

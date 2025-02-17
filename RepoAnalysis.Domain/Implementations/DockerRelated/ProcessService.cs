@@ -21,7 +21,7 @@ public partial class ProcessService : IProcessService
     {
         using var process = new Process();
         process.StartInfo = startInfo;
-        
+
         process.StartInfo.RedirectStandardOutput = true;
         process.StartInfo.RedirectStandardError = true;
 
@@ -35,13 +35,13 @@ public partial class ProcessService : IProcessService
         try
         {
             process.Start();
-            
+
             var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
             var error = await process.StandardError.ReadToEndAsync(cancellationToken);
 
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
             stopwatch.Stop();
-            
+
             outputBuilder.Append(output);
             errorBuilder.Append(error);
 

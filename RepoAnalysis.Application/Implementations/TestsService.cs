@@ -34,12 +34,14 @@ public class TestsService : ITestsService
         if (lastCommitSha == null)
         {
             _logger.LogWarning("No commit found for {Author} in {Repo} ({Branch})",
-                repoWithBranchQuery.AuthorGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle);
+                repoWithBranchQuery.AuthorGitHubUsername, repoWithBranchQuery.RepoTitle,
+                repoWithBranchQuery.BranchTitle);
             throw new ArgumentNullException(nameof(lastCommitSha));
         }
 
         var percentage = await _gitHubBuildService.EvaluateProjectCodePassedTestsAsync(
-            repoWithBranchQuery.OwnerGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle, lastCommitSha,
+            repoWithBranchQuery.OwnerGitHubUsername, repoWithBranchQuery.RepoTitle, repoWithBranchQuery.BranchTitle,
+            lastCommitSha,
             cancellationToken);
 
         _logger.LogInformation("Project tests verification completed. Passed tests score: {Score}%", percentage);

@@ -6,7 +6,7 @@ using RepoAnalysis.DTOs;
 
 namespace RepoAnalysis.Grpc.Services;
 
-[Authorize(Policy = "repoAnalysisPolicy")]
+[Authorize]
 public class QualityGrpcService : QualityOperator.QualityOperatorBase
 {
     private readonly ILogger<QualityGrpcService> _logger;

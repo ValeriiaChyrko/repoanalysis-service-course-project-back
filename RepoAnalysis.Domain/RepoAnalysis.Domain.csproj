@@ -10,20 +10,20 @@
     <ItemGroup>
         <PackageReference Include="LibGit2Sharp" Version="0.31.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.12.0"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.2"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RepoAnalysis.DTOs\RepoAnalysis.DTOs.csproj" />
+        <ProjectReference Include="..\RepoAnalysis.DTOs\RepoAnalysis.DTOs.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

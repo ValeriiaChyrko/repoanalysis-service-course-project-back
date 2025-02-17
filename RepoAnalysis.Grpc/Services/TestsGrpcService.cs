@@ -6,7 +6,7 @@ using RepoAnalysis.DTOs;
 
 namespace RepoAnalysis.Grpc.Services;
 
-[Authorize(Policy = "repoAnalysisPolicy")]
+[Authorize]
 public class TestsGrpcService : TestsOperator.TestsOperatorBase
 {
     private readonly ILogger<TestsGrpcService> _logger;

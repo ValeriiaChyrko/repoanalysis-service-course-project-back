@@ -4,7 +4,7 @@ namespace RepoAnalysis.DTOs.validators;
 
 public class RepositoryWithBranchDtoValidator : AbstractValidator<RepositoryWithBranchQueryDto>
 {
-    public RepositoryWithBranchDtoValidator() 
+    public RepositoryWithBranchDtoValidator()
     {
         var baseValidator = new BaseQueryDtoValidator();
         RuleFor(x => x)

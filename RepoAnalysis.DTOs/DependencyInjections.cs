@@ -10,7 +10,7 @@ public static class DependencyInjections
     public static void AddDtosServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         services.AddScoped<IValidator<BranchQueryDto>, BranchQueryDtoValidator>();
         services.AddScoped<IValidator<CommitQueryDto>, CommitQueryDtoValidator>();
         services.AddScoped<IValidator<RepositoryWithBranchQueryDto>, RepositoryWithBranchDtoValidator>();
