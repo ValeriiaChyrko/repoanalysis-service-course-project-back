@@ -59,4 +59,44 @@ public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
             throw new RpcException(new Status(StatusCode.Internal, "An error occurred while processing the request."));
         }
     }
+    
+    public override async Task<SingleBranchResponse> PostAuthorBranch(BranchQuery request, ServerCallContext context)
+    {
+        _logger.LogInformation(
+            "Received request to create a new branch for repo: {RepoTitle}, baseBranch: {BaseBranch}, owner: {Owner}, author: {Author}, since: {Since}, until: {Until}",
+            request.RepoTitle, request.BaseBranch, request.OwnerGithubUsername, request.AuthorGithubUsername,
+            request.Since?.ToDateTime(), request.Until?.ToDateTime());
+
+        try
+        {
+            var query = new BranchQueryDto
+            {
+                RepoTitle = request.RepoTitle,
+                OwnerGitHubUsername = request.OwnerGithubUsername,
+                AuthorGitHubUsername = request.AuthorGithubUsername,
+                Since = request.Since?.ToDateTime(),
+                Until = request.Until?.ToDateTime()
+            };
+            
+            var newBranch = await _accountService.PostAuthorBranch(query, context.CancellationToken);
+
+            if (string.IsNullOrWhiteSpace(newBranch))
+            {
+                _logger.LogWarning("Failed to create a new branch for repo: {RepoTitle}", request.RepoTitle);
+                return new SingleBranchResponse();
+            }
+
+            var response = new SingleBranchResponse();
+            response.BranchTitle.Add(newBranch);
+
+            _logger.LogInformation("Successfully created new branch for repo: {RepoTitle}, Branch: {Branch}", request.RepoTitle, newBranch);
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while creating new branch for repo: {RepoTitle}", request.RepoTitle);
+            throw new RpcException(new Status(StatusCode.Internal, "An error occurred while processing the request to create a new branch."));
+        }
+    }
 }

@@ -9,4 +9,6 @@ public interface IBranchService
 
     Task<IReadOnlyCollection<string>?> GetBranchesByAuthorAsync(BranchQueryDto branchQueryDto,
         IEnumerable<string> branchTitles, CancellationToken cancellationToken = default);
+
+    Task<string> PostBranchByAuthorAsync(BranchQueryDto branchQueryDto, CancellationToken cancellationToken = default);
 }

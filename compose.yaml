@@ -1,0 +1,13 @@
+﻿services:
+  repo-analysis:
+    image: repo-analysis.grpc
+    container_name: repo-analysis-grpc
+    build:
+      context: .
+      dockerfile: RepoAnalysis.Grpc/Dockerfile
+    networks:
+      - homework-assignment_network
+
+networks:
+  homework-assignment_network:
+    external: true

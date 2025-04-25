@@ -52,4 +52,73 @@ public class GitHubApiApiClient : IGitHubApiClient
             throw;
         }
     }
+
+    public async Task<JObject> GetJsonObjectAsync(string url, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Sending GET request to GitHub API (expecting JSON object): {Url}", url);
+
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            var response = await _httpClient.GetAsync(url, cancellationToken);
+            stopwatch.Stop();
+
+            _logger.LogInformation("Received response from GitHub API: {StatusCode} in {ElapsedMilliseconds}ms",
+                response.StatusCode, stopwatch.ElapsedMilliseconds);
+
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GitHub API returned error. Status: {StatusCode}, Content: {ErrorContent}",
+                    response.StatusCode, responseContent);
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return JObject.Parse(responseContent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while making GET request to GitHub API: {Url}", url);
+            throw;
+        }
+    }
+
+    public async Task<JObject> PostJsonAsync(string url, object payload, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Sending POST request to GitHub API: {Url}", url);
+
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+            var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content, cancellationToken);
+            stopwatch.Stop();
+
+            _logger.LogInformation("Received response from GitHub API: {StatusCode} in {ElapsedMilliseconds}ms",
+                response.StatusCode, stopwatch.ElapsedMilliseconds);
+
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("GitHub API returned error. Status: {StatusCode}, Content: {ErrorContent}",
+                    response.StatusCode, responseContent);
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            return JObject.Parse(responseContent);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while making POST request to GitHub API: {Url}", url);
+            throw;
+        }
+    }
 }

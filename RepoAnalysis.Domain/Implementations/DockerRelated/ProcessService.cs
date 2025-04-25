@@ -52,7 +52,7 @@ public partial class ProcessService : IProcessService
 
             if (process.ExitCode != 0)
                 _logger.LogWarning("Process finished with errors. ExitCode: {ExitCode}, Errors: {Errors}",
-                    process.ExitCode, errorBuilder.ToString());
+                    process.ExitCode, outputBuilder.ToString());
 
             return new ProcessResult
             {

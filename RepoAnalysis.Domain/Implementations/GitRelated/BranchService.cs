@@ -63,6 +63,49 @@ public class BranchService : IBranchService
             studentBranches.Count, branchQueryDto.AuthorGitHubUsername);
         return studentBranches;
     }
+    
+    public async Task<string> PostBranchByAuthorAsync(BranchQueryDto branchQueryDto, CancellationToken cancellationToken = default)
+    {
+        if (branchQueryDto == null)
+            throw new ArgumentNullException(nameof(branchQueryDto));
+
+        var owner = branchQueryDto.OwnerGitHubUsername;
+        var repo = branchQueryDto.RepoTitle;
+        var newBranchName = $"student/{branchQueryDto.AuthorGitHubUsername}";
+        var newRef = $"refs/heads/{newBranchName}";
+        var baseBranch = branchQueryDto.BaseBranch;
+
+        _logger.LogInformation("Creating new branch '{NewBranch}' in repo '{Repo}'", newBranchName, repo);
+
+        try
+        {
+            var baseBranchUrl = $"repos/{owner}/{repo}/branches/{baseBranch}";
+            var baseBranchInfo = await _gitHubApiClient.GetJsonObjectAsync(baseBranchUrl, cancellationToken);
+            var sha = baseBranchInfo["commit"]?["sha"]?.ToString();
+
+            if (string.IsNullOrEmpty(sha))
+            {
+                _logger.LogWarning("SHA not found for base branch '{BaseBranch}' in repository '{Repo}'", baseBranch, repo);
+                return string.Empty;
+            }
+            
+            var payload = new
+            {
+                @ref = newRef, sha
+            };
+
+            var createUrl = $"repos/{owner}/{repo}/git/refs";
+            await _gitHubApiClient.PostJsonAsync(createUrl, payload, cancellationToken);
+
+            _logger.LogInformation("Branch '{NewBranch}' was created successfully", newBranchName);
+            return newBranchName;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Помилка при створенні гілки '{NewBranch}' у репозиторії '{Repo}'", newBranchName, repo);
+            throw;
+        }
+    }
 
     private async Task<string?> FetchCommitsForBranchAsync(BranchQueryDto branchQueryDto, string branch,
         CancellationToken cancellationToken)

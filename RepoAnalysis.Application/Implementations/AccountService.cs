@@ -46,4 +46,23 @@ public class AccountService : IAccountService
 
         return authorBranches;
     }
+
+    public async Task<string> PostAuthorBranch(BranchQueryDto query, CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "Fetching author branches for {Owner}/{Repo} by {Author} (Since: {Since}, Until: {Until})",
+            query.OwnerGitHubUsername, query.RepoTitle, query.AuthorGitHubUsername, query.Since, query.Until);
+
+        var createdBranchTitle = await _branchService.PostBranchByAuthorAsync(query, cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(createdBranchTitle))
+        {
+            _logger.LogWarning("Failed to create a new branch for repo: {RepoTitle}", query.RepoTitle);
+            return string.Empty;
+        }
+
+        _logger.LogInformation("Returning branch title for author {Author}", query.AuthorGitHubUsername);
+
+        return createdBranchTitle;
+    }
 }

@@ -8,8 +8,13 @@ package repository;
 
 service AccountsOperator {
   rpc GetAuthorBranches (BranchQuery) returns (BranchesResponse);
+  rpc PostAuthorBranch (BranchQuery) returns (SingleBranchResponse);
 }
 
 message BranchesResponse {
   repeated string branch_titles = 1;
+}
+
+message SingleBranchResponse {
+  repeated string branch_title = 1;
 }
