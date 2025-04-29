@@ -90,7 +90,6 @@ public class AccountsGrpcService : AccountsOperator.AccountsOperatorBase
             response.BranchTitle.Add(newBranch);
 
             _logger.LogInformation("Successfully created new branch for repo: {RepoTitle}, Branch: {Branch}", request.RepoTitle, newBranch);
-
             return response;
         }
         catch (Exception ex)
