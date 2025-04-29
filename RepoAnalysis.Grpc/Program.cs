@@ -20,12 +20,16 @@ public static class Program
         // Configure Serilog
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration));
+        
+        builder.Services.AddHealthChecks();
 
         var app = builder.Build();
 
         // Configure middleware and endpoints
         app.UseSerilogRequestLogging();
         app.ConfigureEndpoints();
+        
+        app.MapHealthChecks("/health");
 
         app.Run();
     }
