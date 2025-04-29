@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "branch_query.proto";
+import "Protos/branch_query.proto";
 
 option csharp_namespace = "RepoAnalisys.Grpc";
 
